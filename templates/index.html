@@ -1,0 +1,45 @@
+<!-- templates/index.html  -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask dynamic WTF forms</title>
+</head>
+<body>
+    <h1 style="text-align: center;">My Favourite movies</h1>
+    <form method="POST" action="">
+        {{ form.csrf_token }}
+        {{form.username.label}}
+        {{ form.username() }} <br>
+        <h3>Favourite Movies List</h3>
+        {{ form.movies.label }}
+        {{ form.movies() }}
+        <button type="submit">Post Favourite movies</button>
+        <button id="add-movie-field" type="button">Add new movie</button>
+    </form>
+</body>
+<script>
+    window.onload = function() {
+        let addMovieFieldBtn = document.getElementById('add-movie-field');
+        addMovieFieldBtn.addEventListener('click', function(e){
+            e.preventDefault();
+            let allMoviesFieldWrapper = document.getElementById('movies');
+            let allMoviesField = allMoviesFieldWrapper.getElementsByTagName('input');
+            if(allMoviesField.length > 4) {
+                alert('You can  have only five movies name');
+                return;
+            }
+            let movieInputIds = []
+            for(let i = 0; i < allMoviesField.length; i++) {
+                movieInputIds.push(parseInt(allMoviesField[i].name.split('-')[1]));
+            }
+            let newFieldName = `movies-${Math.max(...movieInputIds) + 1}`;
+            allMoviesFieldWrapper.insertAdjacentHTML('beforeend',`
+            <li><label for="${newFieldName}">Movie Name</label> <input id="${newFieldName}" name="${newFieldName}" type="text" value=""></li> 
+            `);
+        });
+    }
+</script>
+</html>
